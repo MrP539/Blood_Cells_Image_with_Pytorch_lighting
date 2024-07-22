@@ -1,6 +1,6 @@
 # Result 
 
-## ResNet50_Adam
+## 1.ResNet50_Adam
 
 ### loss/epoch
 
@@ -20,7 +20,7 @@
 ![confusion_matrics_on_test_set](https://github.com/user-attachments/assets/3387f160-6edb-424c-ba00-2a0723c5df60)
 
 
-## ResNet50_SGD
+## 2.ResNet50_SGD
 
 
 ### loss/epoch
