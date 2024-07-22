@@ -1,3 +1,5 @@
+## conda environment : Machine_learning_AI_builders
+
 import pytorch_lightning as pl
 import sklearn.metrics
 import torch
@@ -21,7 +23,7 @@ train_transform = torchvision.transforms.Compose([
     torchvision.transforms.TrivialAugmentWide(),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406] ,std=[0.229, 0.224, 0.225])
-])
+])      
 
 valid_transform = torchvision.transforms.Compose([
     torchvision.transforms.Resize((224,224)),
