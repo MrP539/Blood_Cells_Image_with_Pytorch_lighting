@@ -7,6 +7,7 @@ import pytorch_lightning as pl
 from torchmetrics.functional import accuracy
 from sklearn.metrics import classification_report, confusion_matrix
 from create_confusion_matrix import CREATE_CONFUSION_MATRICS
+import torch.utils.data
 
 # Define the transformation for the test set
 transform = transforms.Compose([
@@ -36,7 +37,7 @@ class Bloodcell(pl.LightningModule):
         logits = self.backbone(x)
         #loss = torch.nn.functional.cross_entropy(logits, y)
         preds = torch.argmax(logits, dim=1)
-        acc = accuracy(preds, y, task='multiclass', num_classes=self.n_classes)
+        acc = accuracy(preds, y, task='multiclass', num_classes=self.n_classes,top_k=1)
         #self.log('test_loss', loss, on_step=True, on_epoch=True)
         self.log('test_acc', acc, on_step=True, on_epoch=True)
         self.test_preds.append(preds)
@@ -44,8 +45,8 @@ class Bloodcell(pl.LightningModule):
         return {'preds': preds, 'targets': y}
 
     def on_test_epoch_end(self):
-        preds = torch.cat(self.test_preds)
-        targets = torch.cat(self.test_targets)
+        preds = torch.cat(self.test_preds,dim=0)
+        targets = torch.cat(self.test_targets,dim=0)
         print(classification_report(targets.cpu(), preds.cpu(), target_names=test_set.classes))
         print("Confusion Matrix:\n", confusion_matrix(targets.cpu(), preds.cpu()))
         CREATE_CONFUSION_MATRICS(y_actual=targets.cpu(),y_pred=preds.cpu())
@@ -53,9 +54,9 @@ class Bloodcell(pl.LightningModule):
         
 
 # Load the model from checkpoint
-checkpoint_path = r"D:\machine_learning_AI_Builders\บท4\Classification\Blood_Cells_Image_Dataset_pytorch_lighting\result_model\ResNet50_Adam\resnet50--epoch=42-val_accuracy=0.86-val_loss=0.42_Adam.ckpt"  # Replace with your checkpoint path
+checkpoint_path = r"D:\machine_learning_AI_Builders\บท4\Classification\Blood_Cells_Image_with_Pytorch_lighting\result_model\ResNet50_Adam\resnet50--epoch=42-val_accuracy=0.86-val_loss=0.42_Adam.ckpt"  # Replace with your checkpoint path
 model = Bloodcell.load_from_checkpoint(checkpoint_path=os.path.join(checkpoint_path), n_classes=len(test_set.classes))
 # Test the model
-trainer = pl.Trainer()
-trainer.test(model, dataloaders=torch.utils.data.DataLoader(test_set, batch_size=32, shuffle=False))
+trainer = pl.Trainer(accelerator="gpu")
+trainer.test(model, dataloaders=torch.utils.data.DataLoader(test_set, batch_size=32, shuffle=False,num_workers=0))
 

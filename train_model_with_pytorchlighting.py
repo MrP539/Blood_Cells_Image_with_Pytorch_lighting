@@ -11,7 +11,8 @@ from pytorch_lightning.loggers import CSVLogger
 import sklearn
 from create_confusion_matrix import CREATE_CONFUSION_MATRICS
 
-loot_path = r"D:\machine_learning_AI_Builders\บท4\Classification\Blood_Cells_Image_Dataset_pytorch_lighting"
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+loot_path = r"D:\machine_learning_AI_Builders\บท4\Classification\Blood_Cells_Image_with_Pytorch_lighting"
 
 train_transform = torchvision.transforms.Compose([
     torchvision.transforms.RandomResizedCrop((224,224),scale=(0.2,0.8)),
@@ -87,5 +88,5 @@ csv_logger = CSVLogger(loot_path,"csv_result")
 model = BloodCell(n_classes=len(train_set.classes))
 print(model)
 
-trainer = pl.Trainer(max_epochs=50,devices=1,callbacks=[checkpoint_callback],logger=csv_logger)
+trainer = pl.Trainer(max_epochs=1,devices=1,callbacks=[checkpoint_callback],logger=csv_logger,accelerator='gpu')
 trainer.fit(model=model,train_dataloaders=train_loader,val_dataloaders=valid_loader)

@@ -14,7 +14,7 @@ tranforms = torchvision.transforms.Compose([
 
 test_set = torchvision.datasets.ImageFolder(os.path.join("data_set","test"))
 
-img_test_path = "test.jpg"
+img_test_path = "test.png"
 
 img = Image.open(os.path.join(img_test_path))
 img_tensor = tranforms(img)
@@ -34,7 +34,7 @@ class Bloodcell(pl.LightningModule):
         pred = self.backbone(x)
         return pred
 
-checkpoint_path = os.path.join(r"D:\machine_learning_AI_Builders\บท4\Classification\Blood_Cells_Image_Dataset_pytorch_lighting\checkpoints\resnet50--epoch=48-val_accuracy=0.80-val_loss=0.82_SGD.ckpt")
+checkpoint_path = os.path.join(r"D:\machine_learning_AI_Builders\บท4\Classification\Blood_Cells_Image_with_Pytorch_lighting\result_model\ResNet50_SGD\resnet50--epoch=48-val_accuracy=0.80-val_loss=0.82_SGD.ckpt")
 model = Bloodcell.load_from_checkpoint(n_classes=len(test_set.classes),checkpoint_path=checkpoint_path)
 
 if torch.cuda.is_available():
@@ -45,7 +45,7 @@ index_class = torch.argmax(output,dim=1).cpu().numpy().item()
 class_name = test_set.classes[index_class]
 print(class_name)
 img_cv2 = cv2.imread(img_test_path)
-img_cv2 = cv2.resize(img_cv2,(300,300))
+img_cv2 = cv2.resize(img_cv2,(500,500))
 cv2.putText(img_cv2,f"{class_name}",(20,50),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),4)
 
 cv2.imshow("test",img_cv2)
